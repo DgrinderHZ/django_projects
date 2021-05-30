@@ -9,21 +9,25 @@ class Ad(models.Model) :
     )
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True)
     text = models.TextField()
-    picture = models.BinaryField(null=True, editable=True)
-    content_type = models.CharField(max_length=256, null=True, help_text='The MIMType of the file')
+    picture = models.BinaryField(null=True, blank=True, editable=True)
+    content_type = models.CharField(max_length=256, null=True, blank=True, help_text='The MIMType of the file')
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    # Comments
     comments = models.ManyToManyField(settings.AUTH_USER_MODEL,
         through='Comment', related_name='comments_owned')
+
+    # Favorites
+    favorites = models.ManyToManyField(settings.AUTH_USER_MODEL,
+        through='Fav', related_name='favorite_ads')
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     # Shows up in the admin list
     def __str__(self):
         return self.title
-
-
-
 
 
 class Comment(models.Model) :
@@ -41,3 +45,14 @@ class Comment(models.Model) :
     def __str__(self):
         if len(self.text) < 15 : return self.text
         return self.text[:11] + ' ...'
+
+class Fav(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    # https://docs.djangoproject.com/en/3.0/ref/models/options/#unique-together
+    class Meta:
+        unique_together = ('ad', 'user')
+
+    def __str__(self):
+        return '%s likes  %s'%(self.user.username, self.ad.title[:10])

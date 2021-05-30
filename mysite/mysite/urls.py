@@ -27,7 +27,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Keep
     url(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
 
-    # Sample applications
+    # project applications
     path('autos/', include('autos.urls')),
     path('ads/', include('ads.urls')),
 ]
