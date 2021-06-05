@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
     'home.apps.HomeConfig',
+    "taggit",
 
     # Assignments Applications - don't copy
     'autos.apps.AutosConfig',
